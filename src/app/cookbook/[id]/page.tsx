@@ -1,23 +1,24 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase, Recipe } from '@/lib/supabase'
 
-export default function RecipePage({ params }: { params: { id: string } }) {
+export default function RecipePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const router = useRouter()
   const [recipe, setRecipe] = useState<Recipe | null>(null)
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
-    supabase.from('recipes').select('*').eq('id', params.id).single()
+    supabase.from('recipes').select('*').eq('id', id).single()
       .then(({ data }) => { setRecipe(data); setLoading(false) })
-  }, [params.id])
+  }, [id])
 
   async function deleteRecipe() {
     if (!confirm('Delete this recipe?')) return
     setDeleting(true)
-    await supabase.from('recipes').delete().eq('id', params.id)
+    await supabase.from('recipes').delete().eq('id', id)
     router.push('/cookbook')
   }
 
