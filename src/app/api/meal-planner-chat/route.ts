@@ -73,9 +73,9 @@ After saving, call generate_shopping_list.`
                 day_of_week: { type: 'string', enum: ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'] },
                 recipe_id: { type: 'string' },
                 num_people: { type: 'number' },
-                is_double_batch: { type: 'boolean' },
+                batch_multiplier: { type: 'number' },
               },
-              required: ['day_of_week', 'recipe_id', 'num_people', 'is_double_batch']
+              required: ['day_of_week', 'recipe_id', 'num_people', 'batch_multiplier']
             }
           }
         },
@@ -98,45 +98,62 @@ After saving, call generate_shopping_list.`
   let planSaved = false
 
   try {
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: anthropicMessages,
-      tools,
-    })
-
+    // Agentic loop — keep calling Claude until it stops using tools
+    const currentMessages: Anthropic.MessageParam[] = [...anthropicMessages]
     let reply = ''
-    let toolsUsed: string[] = []
 
-    for (const block of response.content) {
-      if (block.type === 'text') {
-        reply += block.text
-      } else if (block.type === 'tool_use') {
-        toolsUsed.push(block.name)
-        if (block.name === 'save_meal_plan') {
-          const input = block.input as { meals: Array<{ day_of_week: string; recipe_id: string; num_people: number; is_double_batch: boolean }> }
-          // Delete existing plan for this week first
-          await supabase.from('meal_plans').delete().eq('week_start', weekStart)
-          // Insert new plan
-          const rows = input.meals.map((m) => ({
-            week_start: weekStart,
-            day_of_week: m.day_of_week,
-            recipe_id: m.recipe_id,
-            num_people: m.num_people,
-            is_double_batch: m.is_double_batch,
-          }))
-          await supabase.from('meal_plans').insert(rows)
-          planSaved = true
-        }
-        if (block.name === 'generate_shopping_list') {
-          await generateShoppingList(weekStart)
+    while (true) {
+      const response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: currentMessages,
+        tools,
+      })
+
+      // Collect text and execute any tool calls in this turn
+      const toolResults: Anthropic.ToolResultBlockParam[] = []
+
+      for (const block of response.content) {
+        if (block.type === 'text') {
+          reply += block.text
+        } else if (block.type === 'tool_use') {
+          let result = 'ok'
+
+          if (block.name === 'save_meal_plan') {
+            const input = block.input as { meals: Array<{ day_of_week: string; recipe_id: string; num_people: number; batch_multiplier: number }> }
+            await supabase.from('meal_plans').delete().eq('week_start', weekStart)
+            const rows = input.meals.map((m) => ({
+              week_start: weekStart,
+              day_of_week: m.day_of_week,
+              recipe_id: m.recipe_id,
+              num_people: m.num_people,
+              batch_multiplier: m.batch_multiplier,
+            }))
+            await supabase.from('meal_plans').insert(rows)
+            planSaved = true
+            result = 'Meal plan saved successfully.'
+          }
+
+          if (block.name === 'generate_shopping_list') {
+            await generateShoppingList(weekStart)
+            result = 'Shopping list generated successfully.'
+          }
+
+          toolResults.push({ type: 'tool_result', tool_use_id: block.id, content: result })
         }
       }
+
+      // If Claude is done with tools, we're finished
+      if (response.stop_reason !== 'tool_use') break
+
+      // Otherwise feed the assistant turn + tool results back and loop
+      currentMessages.push({ role: 'assistant', content: response.content })
+      currentMessages.push({ role: 'user', content: toolResults })
     }
 
     if (!reply) {
-      reply = toolsUsed.includes('save_meal_plan')
+      reply = planSaved
         ? '✅ Plan saved! Your shopping list is ready in the Shopping tab.'
         : 'Done!'
     }
@@ -164,7 +181,7 @@ async function generateShoppingList(weekStart: string) {
     const recipe = meal.recipe
     if (!recipe) continue
 
-    const scale = (meal.num_people / recipe.servings) * (meal.is_double_batch ? 2 : 1)
+    const scale = (meal.num_people / recipe.servings) * (meal.batch_multiplier ?? 1)
 
     for (const ing of recipe.ingredients) {
       const key = `${ing.name.toLowerCase()}__${ing.unit}`

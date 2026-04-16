@@ -3,9 +3,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const tabs = [
+  { href: '/',              label: 'Home',          icon: HomeIcon },
   { href: '/cookbook',      label: 'Cookbook',      icon: BookIcon },
   { href: '/meal-planner',  label: 'Meal Plan',     icon: CalendarIcon },
   { href: '/shopping-list', label: 'Shopping',      icon: CartIcon },
+  { href: '/freezer',       label: 'Freezer',       icon: SnowflakeIcon },
   { href: '/settings',      label: 'Settings',      icon: SettingsIcon },
 ]
 
@@ -15,7 +17,7 @@ export default function BottomNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-stone-200
                     pb-safe flex max-w-lg mx-auto">
       {tabs.map(({ href, label, icon: Icon }) => {
-        const active = path.startsWith(href)
+        const active = href === '/' ? path === '/' : path.startsWith(href)
         return (
           <Link key={href} href={href}
             className={`flex-1 flex flex-col items-center gap-0.5 py-3 transition-colors
@@ -26,6 +28,16 @@ export default function BottomNav() {
         )
       })}
     </nav>
+  )
+}
+
+function HomeIcon({ active }: { active: boolean }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
   )
 }
 
@@ -58,6 +70,19 @@ function CartIcon({ active }: { active: boolean }) {
       <circle cx="9" cy="21" r="1"/>
       <circle cx="20" cy="21" r="1"/>
       <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+    </svg>
+  )
+}
+
+function SnowflakeIcon({ active }: { active: boolean }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="2" x2="12" y2="22"/>
+      <line x1="2" y1="12" x2="22" y2="12"/>
+      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+      <line x1="19.07" y1="4.93" x2="4.93" y2="19.07"/>
+      <circle cx="12" cy="12" r="2"/>
     </svg>
   )
 }

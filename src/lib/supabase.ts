@@ -36,6 +36,8 @@ export interface MealPlan {
   recipe_id: string
   num_people: number
   is_double_batch: boolean
+  batch_multiplier: number
+  plan_group_id?: string
   recipe?: Recipe     // joined
 }
 
@@ -56,7 +58,19 @@ export interface ShoppingList {
   week_start: string
   items: ShoppingListItem[]
   meal_plan_ids: string[]
+  plan_group_id?: string
+  covered_days?: string[]
   pushed_to_reminders_at?: string
+}
+
+export interface FreezerItem {
+  id: string
+  created_at: string
+  recipe_id: string
+  portions: number
+  cooked_on?: string    // YYYY-MM-DD; null when added manually
+  plan_group_id?: string
+  recipe?: Recipe       // joined
 }
 
 // ── Date helpers ──────────────────────────────────────────────

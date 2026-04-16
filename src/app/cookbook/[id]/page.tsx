@@ -34,10 +34,16 @@ export default function RecipePage({ params }: { params: Promise<{ id: string }>
               <polyline points="15 18 9 12 15 6"/>
             </svg>
           </button>
-          <button onClick={deleteRecipe} disabled={deleting}
-            className="text-sm text-red-400 active:text-red-600 px-2 py-1">
-            {deleting ? 'Deleting…' : 'Delete'}
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={() => router.push(`/cookbook/${id}/edit`)}
+              className="text-sm text-brand-600 active:text-brand-800 px-2 py-1">
+              Edit
+            </button>
+            <button onClick={deleteRecipe} disabled={deleting}
+              className="text-sm text-red-400 active:text-red-600 px-2 py-1">
+              {deleting ? 'Deleting…' : 'Delete'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -45,8 +51,15 @@ export default function RecipePage({ params }: { params: Promise<{ id: string }>
         {/* Hero */}
         <div>
           <h1 className="text-2xl font-bold text-stone-900">{recipe.name}</h1>
-          <div className="flex items-center gap-3 mt-1 text-sm text-stone-500">
+          <div className="flex items-center gap-3 mt-1 text-sm text-stone-500 flex-wrap">
             <span>Serves {recipe.servings}</span>
+            <span className={`text-xs rounded-full px-2 py-0.5 ${
+              recipe.source_url
+                ? 'bg-brand-100 text-brand-700'
+                : 'bg-stone-100 text-stone-500'
+            }`}>
+              {recipe.source_url ? 'Imported via URL' : 'Manually Added'}
+            </span>
             {recipe.tags.map(tag => (
               <span key={tag} className="bg-brand-100 text-brand-700 rounded-full px-2 py-0.5 text-xs">
                 {tag}

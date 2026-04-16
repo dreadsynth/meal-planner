@@ -69,11 +69,23 @@ export default function CookbookPage() {
               🍽️
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-stone-900 truncate">{recipe.name}</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-semibold text-stone-900 truncate">{recipe.name}</p>
+                <span className={`text-xs rounded-full px-2 py-0.5 flex-shrink-0 ${
+                  recipe.source_url
+                    ? 'bg-brand-100 text-brand-700'
+                    : 'bg-stone-100 text-stone-500'
+                }`}>
+                  {recipe.source_url ? 'Imported via URL' : 'Manually Added'}
+                </span>
+              </div>
               <p className="text-sm text-stone-400">
                 Serves {recipe.servings}
                 {recipe.tags.length > 0 && ` · ${recipe.tags.join(', ')}`}
               </p>
+              {recipe.source_url && (
+                <p className="text-xs text-brand-500 truncate mt-0.5">{recipe.source_url}</p>
+              )}
             </div>
             <svg className="text-stone-300 flex-shrink-0" width="16" height="16"
               viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
