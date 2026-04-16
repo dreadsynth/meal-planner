@@ -52,7 +52,8 @@ export default function HomePage() {
 
       // Build date → recipe name (newest plan wins for each date)
       const map: Record<string, string> = {}
-      for (const row of (plansRes.data ?? []) as { week_start: string; day_of_week: string; recipe: { name: string } | null }[]) {
+      type PlanRow = { week_start: string; day_of_week: string; recipe: { name: string } | null }
+      for (const row of (plansRes.data ?? []) as unknown as PlanRow[]) {
         const actualDate = computeActualDate(row.week_start, row.day_of_week)
         if (actualDate >= todayStr && !map[actualDate]) {
           map[actualDate] = row.recipe?.name ?? 'Unknown'
