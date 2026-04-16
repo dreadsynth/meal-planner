@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-gray-50 text-stone-900 h-dvh flex flex-col overscroll-none">
-        <main className="flex-1 overflow-y-auto w-full max-w-lg mx-auto">
+        <main className="flex-1 min-h-0 overflow-y-auto w-full max-w-lg mx-auto">
           {children}
         </main>
         <BottomNav />
