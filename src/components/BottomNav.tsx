@@ -14,8 +14,8 @@ const tabs = [
 export default function BottomNav() {
   const path = usePathname()
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-2 border-b-0 border-stone-200
-                    rounded-tl-3xl rounded-tr-3xl pb-safe flex max-w-lg mx-auto">
+    <nav className="flex-shrink-0 bg-white border-2 border-b-0 border-stone-200
+                    rounded-tl-3xl rounded-tr-3xl pb-safe flex w-full max-w-lg mx-auto">
       {tabs.map(({ href, label, icon: Icon }) => {
         const active = href === '/' ? path === '/' : path.startsWith(href)
         return (
