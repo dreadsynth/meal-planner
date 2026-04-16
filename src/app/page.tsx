@@ -81,7 +81,7 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center py-32">
         <p className="text-stone-400">Loading…</p>
       </div>
     )

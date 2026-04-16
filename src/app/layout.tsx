@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="bg-gray-50 text-stone-900 min-h-screen">
-        <main className="pb-24 max-w-lg mx-auto min-h-screen">
+        <main className="pb-24 max-w-lg mx-auto">
           {children}
         </main>
         <BottomNav />
