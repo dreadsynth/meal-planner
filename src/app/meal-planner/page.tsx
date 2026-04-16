@@ -376,9 +376,13 @@ export default function MealPlannerPage() {
                                 <p className="text-xs text-stone-400">{dayDate(group.weekStart, entry.day_of_week)}</p>
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-stone-900 truncate">{entry.recipe?.name}</p>
+                                <div className="flex items-center gap-1">
+                                  {entry.from_freezer && <span className="text-sm leading-none flex-shrink-0">❄️</span>}
+                                  <p className="text-sm font-medium text-stone-900 truncate">{entry.recipe?.name}</p>
+                                </div>
                                 <p className="text-xs text-stone-400">
-                                  {entry.num_people} people{entry.batch_multiplier > 1 && ` · ×${entry.batch_multiplier} batch`}
+                                  {entry.num_people} people
+                                  {entry.from_freezer ? ' · from freezer' : entry.batch_multiplier > 1 ? ` · ×${entry.batch_multiplier} batch` : ''}
                                 </p>
                               </div>
                             </div>
