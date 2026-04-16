@@ -21,14 +21,14 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  themeColor: '#ec7613',
+  themeColor: '#14b8a6',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-stone-50 text-stone-900 min-h-screen">
-        <main className="pb-20 max-w-lg mx-auto min-h-screen">
+      <body className="bg-gray-50 text-stone-900 min-h-screen">
+        <main className="pb-24 max-w-lg mx-auto min-h-screen">
           {children}
         </main>
         <BottomNav />
