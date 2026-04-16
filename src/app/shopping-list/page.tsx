@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { supabase, ShoppingList, ShoppingListItem, DAYS, capitalise } from '@/lib/supabase'
+import { supabase, ShoppingList, ShoppingListItem, DAYS, DayOfWeek, capitalise } from '@/lib/supabase'
 
 const CATEGORIES = ['produce','meat','fish','dairy & eggs','grains & pasta','tins & jars','pantry','drinks','other']
 const COMPACT_UNITS = new Set(['g', 'ml', 'kg', 'l', 'mg', 'cl'])
@@ -17,7 +17,7 @@ function formatItem(item: ShoppingListItem) {
 function dayDate(planStart: string, dayOfWeek: string, format: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'short' }): string {
   const startDate = new Date(planStart + 'T00:00:00')
   const startDow = (startDate.getDay() + 6) % 7
-  const targetDow = DAYS.indexOf(dayOfWeek)
+  const targetDow = DAYS.indexOf(dayOfWeek as DayOfWeek)
   const offset = (targetDow - startDow + 7) % 7
   const d = new Date(startDate)
   d.setDate(d.getDate() + offset)
@@ -26,7 +26,7 @@ function dayDate(planStart: string, dayOfWeek: string, format: Intl.DateTimeForm
 
 function dayOffset(weekStart: string, dayOfWeek: string): number {
   const startDow = (new Date(weekStart + 'T00:00:00').getDay() + 6) % 7
-  const targetDow = DAYS.indexOf(dayOfWeek)
+  const targetDow = DAYS.indexOf(dayOfWeek as DayOfWeek)
   return (targetDow - startDow + 7) % 7
 }
 

@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { supabase, FreezerItem, DAYS } from '@/lib/supabase'
+import { supabase, FreezerItem, DAYS, DayOfWeek } from '@/lib/supabase'
 
 function localDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -10,7 +10,7 @@ function localDateStr(d: Date): string {
 function computeActualDate(weekStart: string, dayOfWeek: string): string {
   const start = new Date(weekStart + 'T00:00:00')
   const startDow = (start.getDay() + 6) % 7
-  const targetDow = DAYS.indexOf(dayOfWeek as typeof DAYS[number])
+  const targetDow = DAYS.indexOf(dayOfWeek as DayOfWeek)
   const offset = (targetDow - startDow + 7) % 7
   const d = new Date(start)
   d.setDate(d.getDate() + offset)
