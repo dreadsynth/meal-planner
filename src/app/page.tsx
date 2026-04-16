@@ -18,7 +18,7 @@ function computeActualDate(weekStart: string, dayOfWeek: string): string {
 }
 
 export default function HomePage() {
-  const [mealMap, setMealMap] = useState<Record<string, string>>({})
+  const [mealMap, setMealMap] = useState<Record<string, { name: string; fromFreezer: boolean }>>({})
   const [freezerItems, setFreezerItems] = useState<FreezerItem[]>([])
   const [recipeCount, setRecipeCount] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -43,7 +43,7 @@ export default function HomePage() {
       const [plansRes, freezerRes, recipesRes] = await Promise.all([
         supabase
           .from('meal_plans')
-          .select('week_start, day_of_week, recipe:recipes(name)')
+          .select('week_start, day_of_week, from_freezer, recipe:recipes(name)')
           .gte('week_start', earliest)
           .order('created_at', { ascending: false }),
         supabase.from('freezer_items').select('*, recipe:recipes(name)'),
@@ -51,12 +51,12 @@ export default function HomePage() {
       ])
 
       // Build date → recipe name (newest plan wins for each date)
-      const map: Record<string, string> = {}
-      type PlanRow = { week_start: string; day_of_week: string; recipe: { name: string } | null }
+      const map: Record<string, { name: string; fromFreezer: boolean }> = {}
+      type PlanRow = { week_start: string; day_of_week: string; from_freezer: boolean; recipe: { name: string } | null }
       for (const row of (plansRes.data ?? []) as unknown as PlanRow[]) {
         const actualDate = computeActualDate(row.week_start, row.day_of_week)
         if (actualDate >= todayStr && !map[actualDate]) {
-          map[actualDate] = row.recipe?.name ?? 'Unknown'
+          map[actualDate] = { name: row.recipe?.name ?? 'Unknown', fromFreezer: row.from_freezer }
         }
       }
 
@@ -107,9 +107,14 @@ export default function HomePage() {
                     <p className="text-xs font-semibold text-stone-700">{label}</p>
                     <p className="text-xs text-stone-400">{short}</p>
                   </div>
-                  <p className={`text-sm flex-1 ${meal ? 'text-stone-900 font-medium' : 'text-stone-300 italic'}`}>
-                    {meal ?? 'No meal planned'}
-                  </p>
+                  {meal ? (
+                    <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                      <p className="text-sm text-stone-900 font-medium truncate">{meal.name}</p>
+                      {meal.fromFreezer && <span className="text-sm flex-shrink-0">❄️</span>}
+                    </div>
+                  ) : (
+                    <p className="text-sm flex-1 text-stone-300 italic">No meal planned</p>
+                  )}
                 </div>
               )
             })}

@@ -11,7 +11,8 @@ interface MealInput {
   recipe_id: string
   num_people: number
   batch_multiplier: number
-  meal_date?: string   // actual YYYY-MM-DD of this meal
+  from_freezer: boolean
+  meal_date?: string
 }
 
 function generatePlanId(): string {
@@ -32,6 +33,7 @@ export async function POST(req: NextRequest) {
       recipe_id: m.recipe_id,
       num_people: m.num_people,
       batch_multiplier: m.batch_multiplier,
+      from_freezer: m.from_freezer,
     }))
   )
 

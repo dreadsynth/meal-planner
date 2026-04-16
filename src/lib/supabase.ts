@@ -37,6 +37,7 @@ export interface MealPlan {
   num_people: number
   is_double_batch: boolean
   batch_multiplier: number
+  from_freezer: boolean
   plan_group_id?: string
   recipe?: Recipe     // joined
 }

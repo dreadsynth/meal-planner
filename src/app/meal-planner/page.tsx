@@ -248,6 +248,7 @@ export default function MealPlannerPage() {
           recipe_id: p.recipeId,
           num_people: p.numPeople,
           batch_multiplier: p.batchMultiplier,
+          from_freezer: p.fromFreezer,
           meal_date: p.date,
         })),
       }),
