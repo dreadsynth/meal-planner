@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { supabase, MealPlan, FreezerItem, DAYS } from '@/lib/supabase'
+import { supabase, FreezerItem, DAYS } from '@/lib/supabase'
 
 function localDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -52,7 +52,7 @@ export default function HomePage() {
 
       // Build date → recipe name (newest plan wins for each date)
       const map: Record<string, string> = {}
-      for (const row of (plansRes.data ?? []) as (MealPlan & { recipe: { name: string } | null })[]) {
+      for (const row of (plansRes.data ?? []) as { week_start: string; day_of_week: string; recipe: { name: string } | null }[]) {
         const actualDate = computeActualDate(row.week_start, row.day_of_week)
         if (actualDate >= todayStr && !map[actualDate]) {
           map[actualDate] = row.recipe?.name ?? 'Unknown'
