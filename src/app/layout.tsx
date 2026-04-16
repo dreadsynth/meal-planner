@@ -3,7 +3,10 @@ import './globals.css'
 import BottomNav from '@/components/BottomNav'
 
 export const metadata: Metadata = {
-  title: 'Meal Planner',
+  title: {
+    default: 'Meal Planner',
+    template: 'Meal Planner - %s',
+  },
   description: 'Family meal planner',
   manifest: '/manifest.json',
   appleWebApp: {
