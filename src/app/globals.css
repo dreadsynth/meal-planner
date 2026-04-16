@@ -35,7 +35,7 @@
            transition-shadow text-[15px];
   }
   .page-header {
-    @apply sticky top-0 z-10 px-4 pt-12 pb-4;
+    @apply sticky top-0 z-10 px-4 pt-12 pb-4 bg-gray-50;
   }
   .section-title {
     @apply text-[28px] font-bold text-stone-950 tracking-tight leading-tight;
