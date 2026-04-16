@@ -151,13 +151,13 @@ export default function HomePage() {
                 {recipeCount}
               </span>
             </div>
-            <Link href="/cookbook/add" className="flex items-center gap-3 px-4 py-3 active:bg-stone-50 transition-colors">
+            <Link href="/cookbook/add?mode=url" className="flex items-center gap-3 px-4 py-3 active:bg-stone-50 transition-colors">
               <p className="text-sm text-stone-800 flex-1">Import recipe from URL</p>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-stone-300 flex-shrink-0">
                 <polyline points="9 18 15 12 9 6"/>
               </svg>
             </Link>
-            <Link href="/cookbook/add" className="flex items-center gap-3 px-4 py-3 active:bg-stone-50 transition-colors">
+            <Link href="/cookbook/add?mode=manual" className="flex items-center gap-3 px-4 py-3 active:bg-stone-50 transition-colors">
               <p className="text-sm text-stone-800 flex-1">Add recipe manually</p>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-stone-300 flex-shrink-0">
                 <polyline points="9 18 15 12 9 6"/>

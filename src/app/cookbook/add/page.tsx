@@ -1,13 +1,19 @@
 'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase, Ingredient } from '@/lib/supabase'
 
 type Mode = 'choose' | 'url' | 'manual'
 
 export default function AddRecipePage() {
+  return <Suspense><AddRecipePageInner /></Suspense>
+}
+
+function AddRecipePageInner() {
   const router = useRouter()
-  const [mode, setMode] = useState<Mode>('choose')
+  const searchParams = useSearchParams()
+  const initialMode = (searchParams.get('mode') as Mode) ?? 'choose'
+  const [mode, setMode] = useState<Mode>(initialMode)
   const [url, setUrl] = useState('')
   const [scraping, setScraping] = useState(false)
   const [error, setError] = useState('')
